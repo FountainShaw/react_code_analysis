@@ -70,7 +70,7 @@ function commitRoot() {
 
 
 // 至此，我们就基本上完成了关于render的优化了
-// 我们可以再次整合以上代码，并将requestIdleCallback的重新实现进行实验
+// 我们可以再次整合以上代码，并以requestIdleCallback的重新实现进行实验
 // 看是否达到了我们的预期效果，也就是一次性渲染所有节点
 
 

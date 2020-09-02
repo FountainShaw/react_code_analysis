@@ -26,7 +26,7 @@ function performUnitOfWork(fiber) {
   }
 }
 ​
-// 对函数组件的特殊处理，我们子要获取到他的子元素，然后将其子元素进行调和就好
+// 对函数组件的特殊处理，我们只要获取到他的子元素，然后将其子元素进行调和就好
 // 剩下要做的，是针对此处的fiber，这些工作我们留在commitWork函数中做
 function updateFunctionComponent(fiber) {
   const children = [fiber.type(fiber.props)]
@@ -155,6 +155,9 @@ function useState(inital) {
   // 对wipRoot、nextUnitOfWork及deletions所做的，只是做了和render函数一样的事而已
   const setState = action => {
     // 先将对状态的改变行为action保存起来，在useState再次执行时，会统一执行action
+    // 也就是将改变状态的函数存起来，在重新执行一遍之前的render
+    // 进而触发保存的状态改变函数，再导致状态及页面渲染的变化
+    // 而此过程中只有函数组件会产生可能的变化，其他的组件都是之前已经有的
     hook.queue.push(action)
 
     wipRoot = {

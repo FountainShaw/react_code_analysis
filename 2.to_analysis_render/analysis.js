@@ -12,7 +12,7 @@ function render_1(element, container) {
 function render_2(element, container) {
   const node = document.createElement(element.type)
 
-  element.props.children.forEach(child => render(child, node))
+  element.props.children.forEach(child => render_2(child, node))
 
   container.appendChild(node)
 }
@@ -34,7 +34,7 @@ function render(element, container) {
 }
 
 // 那么，到此处为止，我们基本上就实现了一个简单版的react架构
-// 只要把之前写的createElement函数和此处的最后一般render函数合起来使用
+// 只要把之前写的createElement函数和此处的最后一版render函数合起来使用
 // 就可以做到最基本的节点创建与节点渲染了
 // 我们把之前的createElement方法拿进来，尝试渲染
 

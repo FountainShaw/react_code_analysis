@@ -1,10 +1,8 @@
 // 要对DOM进行改操作，我们需要知道之前是什么，现在是什么，要有针对性的改
 // 而不是告诉我现在是什么样，我就直接一下子全部重新渲染一遍
-// 说到这里，相信大家都会隐约冒出一个概念：虚拟DOM的diff
-// 确实，我们改元素就是对Fiber树这么个虚拟出来的类似DOM的东西，进行针对性的diff
-// 那我们首先必须知道，之前的Fiber树是什么样的？
+// 这么做的前提是我们能够知道之前的Fiber树是什么样的？
 // 很简单，我们只要让每一个Fiber节点保存一份之前的引用就好了
-// 根节点的处理要特殊一些，因为他会涉及到重置的问题
+// 根节点的处理要特殊一些，因为所有的Fiber都是以他为开始和结束的
 
 
 let currentRoot = null
@@ -41,7 +39,7 @@ function commitRoot() {
 
 // 其实要处理的不止是根节点，应该是所有节点都需要保存一份，这便于修改时的对比
 // 所以我们需要把performUnitOfWork函数中为元素的所有子元素创建工作单元的任务给抽离出来
-// 让其作为独立函数，负责处理元素子节点Fiber的构建和对比等工作
+// 让其作为独立函数，负责处理元素子节点Fiber的构建和对比等工作，这一过程我们称为调和
 
 function performUnitOfWork(fiber) {
   // 1.将元素添加到dom节点中去
@@ -108,12 +106,6 @@ function reconcileChildren(wipFiber, elements) {
       parent: fiber,
       dom: null
     }
-
-    if (index === 0) fiber.child = newFiber
-    else prevSibling.sibling = newFiber
-
-    prevSibling = newFiber
-    index++ 
     */
     // --------------- DEL ----------------------
 
@@ -160,7 +152,16 @@ function reconcileChildren(wipFiber, elements) {
       deletions.push(oldFiber)
     }
 
+    // 如果oldFiber存在，则就要考虑其兄弟元素的下一轮遍历
+    if (oldFiber) oldFiber = oldFiber.sibling
+
     // --------------- ADD ----------------------
+
+    if (index === 0) wipFiber.child = newFiber
+    else if (element) prevSibling.sibling = newFiber
+
+    prevSibling = newFiber
+    index++
   } 
 }
 
