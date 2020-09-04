@@ -1,5 +1,6 @@
 // 正如刚才分析所说，createElement只是创建了一个对象
 // 这个创建的对象有type和props两个属性，那么我们要做的只是创建一个含有这两个属性的对象而已
+// 而且得保证所有的节点都是react元素，即都是type和props两个属性组成的对象
 
 function createElement(type, props, ...children) {
   return {
